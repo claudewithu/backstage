@@ -83,7 +83,7 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: Intelligence Core
+  name: aiops
   title: "Robusta (AI Engine)"
   annotations:
     backstage.io/techdocs-ref: dir:.
