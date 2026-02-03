@@ -84,7 +84,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: aiops
-  title: "Robusta (AI Engine)"
+  title: "Alert AI Engine"
   annotations:
     backstage.io/techdocs-ref: dir:.
   links:
