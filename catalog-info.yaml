@@ -1,46 +1,110 @@
+---
+# 系统总览：智能告警平台
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: smart-alert-system
+  description: "基于云原生平台智能告警平台"
+spec:
+  owner: user:guest
+
+---
+# 1. 业务应用 (图中 ID 3)
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: intelligence-alert-poc
-  description: "基于云原生容器环境的 AIOps"
-  annotations:
-    # 核心：让 Backstage 知道文档在哪里
-    backstage.io/techdocs-ref: dir:.
-  links:
-    - url: https://platform.robusta.dev/aiops-poc-new
-      title: "打开 Robusta 控制台"
-      icon: dashboard
-    - url: https://http://98.92.83.207:30985/
-      title: "查看实时监控 (Grafana)"
-      icon: search
+  name: demo-app
+  title: "Demo Application"
 spec:
   type: service
   lifecycle: experimental
-  owner: pesteam # 对应你在 Backstage 里的团队名
-  system: aiops-suite
-  # 表示这个 POC 依赖于下方的资源
+  owner: user:guest
+  system: smart-alert-system
+
+---
+# 2. 监控核心 (图中 ID 4)
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: prometheus
+  title: "Prometheus"
+spec:
+  type: service
+  lifecycle: active
+  owner: user:guest
+  system: smart-alert-system
   dependsOn:
-    - resource:aws-k3s-cluster
-    - resource:robusta-saas
+    - component:demo-app # 对应 Scrape Metrics 线条
 
 ---
-# 描述底层 K3s 环境
+# 3. 可视化 (图中 ID 5)
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: grafana
+  title: "Grafana Dashboard"
+spec:
+  type: service
+  lifecycle: active
+  owner: user:guest
+  system: smart-alert-system
+  dependsOn:
+    - component:prometheus # 对应 Visualize 线条
+
+---
+# 4. 告警管理 (图中 ID 6)
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: alert-manager
+  title: "Alert Manager"
+spec:
+  type: service
+  lifecycle: active
+  owner: user:guest
+  system: smart-alert-system
+  dependsOn:
+    - component:prometheus # 对应 Trigger Alert 线条
+
+---
+# 5. AI 引擎核心 (图中 ID 7)
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: robusta-ai
+  title: "Robusta (AI Engine)"
+spec:
+  type: service
+  lifecycle: active
+  owner: user:guest
+  system: smart-alert-system
+  dependsOn:
+    - component:alert-manager # 对应 Enrichment & RCA 线条
+
+---
+# 6. 通知通道 (图中 ID 8)
 apiVersion: backstage.io/v1alpha1
 kind: Resource
 metadata:
-  name: aws-k3s-cluster
-  description: "部署在 AWS EC2 上的轻量化 K8s 集群"
+  name: slack-alert-channel
+  title: "Slack (Alert Channel)"
 spec:
-  type: kubernetes-cluster
-  owner: pesteam
+  type: communication
+  owner: user:guest
+  system: smart-alert-system
+  dependencyOf:
+    - component:robusta-ai # 对应 AI Recommendations
 
 ---
-# 描述外部工具平台
+# 7. ITSM 工单系统 (图中 ID 9)
 apiVersion: backstage.io/v1alpha1
 kind: Resource
 metadata:
-  name: robusta-saas
-  description: "第三方 AIOps 告警分析平台"
+  name: servicenow-itsm
+  title: "ServiceNow (ITSM)"
 spec:
-  type: external-saas
-  owner: pesteam
+  type: itsm-tool
+  owner: user:guest
+  system: smart-alert-system
+  dependencyOf:
+    - component:robusta-ai # 对应 Auto Ticket
