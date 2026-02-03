@@ -2,7 +2,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: intelligence-alert-poc
-  description: "基于 K3s 和 Robusta 的智能告警工程实现"
+  description: "基于云原生容器环境的 AIOps"
   annotations:
     # 核心：让 Backstage 知道文档在哪里
     backstage.io/techdocs-ref: dir:.
