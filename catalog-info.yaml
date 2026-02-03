@@ -3,7 +3,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
-  name: smart-alert-system
+  name: intelligence-observability-system
   description: "基于云原生平台智能告警平台"
 spec:
   owner: user:guest
