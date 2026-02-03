@@ -8,9 +8,9 @@ metadata:
     backstage.io/techdocs-ref: dir:.
   links:
     - url: https://platform.robusta.dev/aiops-poc-new
-      title: "打开 Robusta SaaS 控制台"
+      title: "打开 Robusta 控制台"
       icon: dashboard
-    - url: https://grafana.your-poc.com
+    - url: https://http://98.92.83.207:30985/
       title: "查看实时监控 (Grafana)"
       icon: search
 spec:
