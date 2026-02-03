@@ -1,0 +1,46 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: intelligence-alert-poc
+  description: "基于 K3s 和 Robusta 的智能告警工程实现"
+  annotations:
+    # 核心：让 Backstage 知道文档在哪里
+    backstage.io/techdocs-ref: dir:.
+  links:
+    - url: https://platform.robusta.dev/aiops-poc-new
+      title: "打开 Robusta SaaS 控制台"
+      icon: dashboard
+    - url: https://grafana.your-poc.com
+      title: "查看实时监控 (Grafana)"
+      icon: search
+spec:
+  type: service
+  lifecycle: experimental
+  owner: pesteam # 对应你在 Backstage 里的团队名
+  system: aiops-suite
+  # 表示这个 POC 依赖于下方的资源
+  dependsOn:
+    - resource:aws-k3s-cluster
+    - resource:robusta-saas
+
+---
+# 描述底层 K3s 环境
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: aws-k3s-cluster
+  description: "部署在 AWS EC2 上的轻量化 K8s 集群"
+spec:
+  type: kubernetes-cluster
+  owner: pesteam
+
+---
+# 描述外部工具平台
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: robusta-saas
+  description: "第三方 AIOps 告警分析平台"
+spec:
+  type: external-saas
+  owner: pesteam
