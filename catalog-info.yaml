@@ -9,50 +9,62 @@ spec:
   owner: user:guest
 
 ---
-# 1. 业务应用 (图中 ID 3)
+# 1. 业务应用
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: demo-app
   title: "Demo Application"
+  links:
+    - url: https://github.com/your-org/demo-app
+      title: "源码仓库"
+      icon: github
 spec:
   type: service
   lifecycle: experimental
   owner: user:guest
-  system: smart-alert-system
+  system: intelligence-observability-system
 
 ---
-# 2. 监控核心 (图中 ID 4)
+# 2. 监控核心
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: prometheus
   title: "Prometheus"
+  links:
+    - url: https://prometheus.io/docs/introduction/overview/
+      title: "官方文档"
+      icon: help
 spec:
   type: service
   lifecycle: active
   owner: user:guest
-  system: smart-alert-system
+  system: intelligence-observability-system
   dependsOn:
-    - component:demo-app # 对应 Scrape Metrics 线条
+    - component:demo-app
 
 ---
-# 3. 可视化 (图中 ID 5)
+# 3. 可视化
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: grafana
   title: "Grafana Dashboard"
+  links:
+    - url: http://98.92.83.207:30985/
+      title: "查看 Grafana"
+      icon: dashboard
 spec:
   type: service
   lifecycle: active
   owner: user:guest
-  system: smart-alert-system
+  system: intelligence-observability-system
   dependsOn:
-    - component:prometheus # 对应 Visualize 线条
+    - component:prometheus
 
 ---
-# 4. 告警管理 (图中 ID 6)
+# 4. 告警管理
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
@@ -62,49 +74,61 @@ spec:
   type: service
   lifecycle: active
   owner: user:guest
-  system: smart-alert-system
+  system: intelligence-observability-system
   dependsOn:
-    - component:prometheus # 对应 Trigger Alert 线条
+    - component:prometheus
 
 ---
-# 5. AI 引擎核心 (图中 ID 7)
+# 5. AIOps引擎核心 (关键修改点：links 与 name 匹配)
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: robusta-ai
+  name: aiops
   title: "Robusta (AI Engine)"
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+  links:
+    - url: https://platform.robusta.dev/aiops-poc-new
+      title: "打开 Robusta 控制台"
+      icon: dashboard
 spec:
   type: service
   lifecycle: active
   owner: user:guest
-  system: smart-alert-system
+  system: intelligence-observability-system
   dependsOn:
-    - component:alert-manager # 对应 Enrichment & RCA 线条
+    - component:alert-manager
 
 ---
-# 6. 通知通道 (图中 ID 8)
+# 6. 通知通道 (修正了 dependencyOf)
 apiVersion: backstage.io/v1alpha1
 kind: Resource
 metadata:
   name: slack-alert-channel
   title: "Slack (Alert Channel)"
+  links:
+    - url: https://slack.ibm.com/
+      title: "Go to Slack"
 spec:
   type: communication
   owner: user:guest
-  system: smart-alert-system
+  system: intelligence-observability-system
   dependencyOf:
-    - component:robusta-ai # 对应 AI Recommendations
+    - component:aiops # 之前是 robusta-ai，现修正为 aiops
 
 ---
-# 7. ITSM 工单系统 (图中 ID 9)
+# 7. ITSM 工单系统 (修正了 dependencyOf)
 apiVersion: backstage.io/v1alpha1
 kind: Resource
 metadata:
   name: servicenow-itsm
   title: "ServiceNow (ITSM)"
+  links:
+    - url: https://www.servicenow.com/
+      title: "ITSM Dashboard"
 spec:
   type: itsm-tool
   owner: user:guest
-  system: smart-alert-system
+  system: intelligence-observability-system
   dependencyOf:
-    - component:robusta-ai # 对应 Auto Ticket
+    - component:aiops # 之前是 robusta-ai，现修正为 aiops
